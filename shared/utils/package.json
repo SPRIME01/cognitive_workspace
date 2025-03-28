@@ -1,0 +1,20 @@
+{
+  "name": "@shared/utils",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@shared/types": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.3",
+    "eslint": "^8.42.0"
+  }
+}

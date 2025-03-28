@@ -1,0 +1,12 @@
+{
+  "name": "@infrastructure/docker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "lint": "hadolint */Dockerfile",
+    "build": "docker-compose build",
+    "up": "docker-compose up -d",
+    "down": "docker-compose down",
+    "logs": "docker-compose logs -f"
+  }
+}

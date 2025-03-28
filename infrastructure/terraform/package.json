@@ -1,0 +1,15 @@
+{
+  "name": "@infrastructure/terraform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "lint": "tflint",
+    "fmt": "terraform fmt",
+    "plan": "terraform plan",
+    "apply": "terraform apply",
+    "destroy": "terraform destroy"
+  },
+  "devDependencies": {
+    "tflint": "^0.29.0"
+  }
+}
