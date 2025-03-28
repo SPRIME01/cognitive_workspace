@@ -1,0 +1,17 @@
+{
+  "name": "@cognitive-workspace/docs",
+  "version": "0.1.0",
+  "description": "Documentation generation for the Cognitive Workspace",
+  "private": true,
+  "scripts": {
+    "build": "typedoc",
+    "serve": "serve docs-dist",
+    "clean": "rimraf docs-dist"
+  },
+  "devDependencies": {
+    "typedoc": "^0.25.4",
+    "rimraf": "^5.0.1",
+    "serve": "^14.2.1",
+    "typescript": "^5.3.3"
+  }
+}

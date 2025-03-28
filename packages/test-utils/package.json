@@ -1,0 +1,31 @@
+{
+  "name": "@cognitive-workspace/test-utils",
+  "version": "0.1.0",
+  "description": "Shared testing utilities for the Cognitive Workspace",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit",
+    "update-deps": "npm-check-updates -u"
+  },
+  "dependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/user-event": "^14.4.3",
+    "msw": "^1.2.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "eslint": "^8.42.0",
+    "jest": "^29.5.0",
+    "rimraf": "^5.0.1",
+    "typescript": "^5.3.3"
+  }
+}

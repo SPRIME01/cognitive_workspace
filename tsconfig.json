@@ -1,39 +1,49 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "target": "es2018",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
+        /* Base Options */
         "esModuleInterop": true,
-        "module": "esnext",
-        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "target": "es2022",
+        "allowJs": true,
         "resolveJsonModule": true,
+        "moduleDetection": "force",
         "isolatedModules": true,
-        "jsx": "preserve",
-        "incremental": true,
-        "baseUrl": "."
+        /* Strictness */
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        /* Module Resolution */
+        "moduleResolution": "node",
+        "module": "ESNext",
+        "paths": {
+            "@cognitive-workspace/*": [
+                "./*/src"
+            ]
+        },
+        /* Bundler mode */
+        "verbatimModuleSyntax": true,
+        /* Completeness */
+        "allowSyntheticDefaultImports": true,
+        "declaration": true,
+        "sourceMap": true,
+        "composite": true,
+        "declarationMap": true,
+        /* Type Checking & Linting */
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "useUnknownInCatchVariables": true,
+        /* Performance */
+        "incremental": true
     },
     "exclude": [
-        "node_modules",
-        "dist",
-        ".turbo"
-    ],
-    "references": [
-        {
-            "path": "./frontend"
-        },
-        {
-            "path": "./shared/types"
-        },
-        {
-            "path": "./shared/utils"
-        }
+        "node_modules"
     ]
 }
