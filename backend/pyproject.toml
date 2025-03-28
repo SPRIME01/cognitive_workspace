@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,26 @@ name = "cognitive-workspace-backend"
 version = "0.1.0"
 description = "Backend services for Cognitive Workspace"
 requires-python = ">=3.9"
-license = {text = "MIT"}
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
+dependencies = [
+    "fastapi>=0.100.0",
+    "pydantic>=2.0.0",
+    "uvicorn>=0.22.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+    "httpx>=0.24.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.mypy]
 python_version = "3.9"
@@ -15,12 +34,22 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
+plugins = ["pydantic.mypy"]
 
-[tool.black]
+[tool.ruff]
 line-length = 88
-target-version = ['py39']
-include = '\.pyi?$'
+target-version = "py39"
+select = ["E", "F", "I", "N", "B", "C4", "SIM", "ERA", "PL"]
+ignore = []
+fix = true
 
-[tool.isort]
-profile = "black"
-line_length = 88
+[tool.ruff.isort]
+known-third-party = ["fastapi", "pydantic"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.uv]
+pip = true
