@@ -1,12 +1,19 @@
 """
 Shared test fixtures and utilities for DDD structure validation.
 """
+
 import os
+import sys
 import importlib
 import pkgutil
 import pytest
 import inspect
 from typing import List, Dict, Any, Set, Type
+
+# Add the backend directory to Python path so we can import from app
+backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
 
 
 def get_module_classes(module_path: str) -> Dict[str, Type]:
@@ -22,7 +29,8 @@ def get_module_classes(module_path: str) -> Dict[str, Type]:
     try:
         module = importlib.import_module(module_path)
         return {
-            name: obj for name, obj in inspect.getmembers(module, inspect.isclass)
+            name: obj
+            for name, obj in inspect.getmembers(module, inspect.isclass)
             if obj.__module__ == module_path
         }
     except (ImportError, ModuleNotFoundError):
@@ -41,6 +49,8 @@ def get_all_modules_in_package(package_path: str) -> List[str]:
     """
     try:
         package = importlib.import_module(package_path)
+        if not hasattr(package, '__file__') or package.__file__ is None:
+            return []
         package_dir = os.path.dirname(package.__file__)
         module_paths = []
 

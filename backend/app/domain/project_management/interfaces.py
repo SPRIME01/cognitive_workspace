@@ -9,32 +9,32 @@ from app.domain.common.interfaces import Repository
 from app.domain.project_management.entities import Project
 
 
-class ProjectRepository(Repository[Project], Protocol):
+class ProjectRepository(Repository[Project, str], Protocol):
     """Repository interface for Project aggregate."""
 
     async def get_by_owner(
         self, owner_id: str, skip: int = 0, limit: int = 100
     ) -> List[Project]:
         """Get projects by owner ID."""
-        pass
+        ...
 
     async def get_by_member(
         self, member_id: str, skip: int = 0, limit: int = 100
     ) -> List[Project]:
         """Get projects where the user is a member."""
-        pass
+        ...
 
     async def search_by_name(
         self, name: str, skip: int = 0, limit: int = 100
     ) -> List[Project]:
         """Search projects by name."""
-        pass
+        ...
 
     async def get_active_projects(
         self, skip: int = 0, limit: int = 100
     ) -> List[Project]:
         """Get all active projects."""
-        pass
+        ...
 
 
 class ProjectEventStore(Protocol):
@@ -48,4 +48,4 @@ class ProjectEventStore(Protocol):
         self, project_id: str, since: Optional[datetime] = None
     ) -> List[dict]:
         """Get events for a project since a specific time."""
-        pass
+        raise NotImplementedError

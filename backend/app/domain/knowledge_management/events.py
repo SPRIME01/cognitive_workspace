@@ -2,8 +2,8 @@
 Knowledge Management domain events.
 """
 
-from typing import List, Dict, Any, Optional
-from datetime import datetime
+from typing import Dict, Any, Optional
+from pydantic import Field, ConfigDict
 
 from app.domain.common.events import DomainEvent
 from app.domain.knowledge_management.entities import Tag, Source, Relationship
@@ -18,6 +18,7 @@ class KnowledgeItemCreated(DomainEvent):
     confidence: float
     source: Optional[Source]
     created_by: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class RelationshipEstablished(DomainEvent):
@@ -27,6 +28,7 @@ class RelationshipEstablished(DomainEvent):
     target_id: str
     relationship: Relationship
     established_by: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class RelationshipRemoved(DomainEvent):
@@ -36,6 +38,7 @@ class RelationshipRemoved(DomainEvent):
     target_id: str
     relationship: Relationship
     removed_by: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class KnowledgeTagAdded(DomainEvent):
@@ -44,6 +47,7 @@ class KnowledgeTagAdded(DomainEvent):
     knowledge_item_id: str
     tag: Tag
     added_by: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ArtifactReferenceAdded(DomainEvent):
@@ -52,6 +56,7 @@ class ArtifactReferenceAdded(DomainEvent):
     knowledge_item_id: str
     artifact_id: str
     added_by: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ConfidenceUpdated(DomainEvent):
@@ -62,6 +67,7 @@ class ConfidenceUpdated(DomainEvent):
     new_confidence: float
     updated_by: str
     reason: Optional[str]
+    model_config = ConfigDict(from_attributes=True)
 
 
 class KnowledgeSourceAdded(DomainEvent):
@@ -70,4 +76,5 @@ class KnowledgeSourceAdded(DomainEvent):
     knowledge_item_id: str
     source: Source
     added_by: str
-    metadata: Dict[str, Any]
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    model_config = ConfigDict(from_attributes=True)

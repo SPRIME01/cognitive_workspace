@@ -3,8 +3,8 @@ Tests to validate the structure of the domain layer in accordance with DDD princ
 """
 
 import inspect
+
 import pytest
-from typing import Dict, Type, Any, List
 
 
 class TestDomainLayer:
@@ -79,9 +79,7 @@ class TestDomainLayer:
                 ):
                     value_objects.append((module_path, class_name, class_obj))
 
-        assert len(value_objects) > 0, (
-            "Domain layer should have at least one value object"
-        )
+        assert len(value_objects) > 0, "Domain layer should have at least one value object"
 
     def test_domain_aggregates_exist(self, domain_classes):
         """
@@ -211,16 +209,13 @@ class TestDomainLayer:
 
             # Check if the class has property decorators for attribute access
             has_properties = any(
-                isinstance(value, property)
-                for name, value in inspect.getmembers(class_obj)
+                isinstance(value, property) for name, value in inspect.getmembers(class_obj)
             )
 
             if has_private_attrs or has_properties:
                 well_encapsulated += 1
 
-        assert well_encapsulated > 0, (
-            "Domain objects should properly encapsulate their state"
-        )
+        assert well_encapsulated > 0, "Domain objects should properly encapsulate their state"
 
     def test_domain_validation(self, domain_classes):
         """
@@ -265,10 +260,20 @@ class TestDomainLayer:
 
             # Check for validation in __init__ or setters
             init_method = getattr(class_obj, "__init__", None)
-            if init_method and "raise" in inspect.getsource(init_method):
-                has_validation = True
+            if (
+                init_method
+                and inspect.isfunction(init_method)
+                and hasattr(init_method, "__code__")  # Ensure source code is available
+            ):
+                try:
+                    if "raise" in inspect.getsource(init_method):
+                        has_validation = True
+                except OSError:
+                    # Skip if source code is not available
+                    pass
 
             if has_validation:
                 with_validation += 1
 
-        assert with_validation > 0, "Domain objects should validate their state"
+        # Assert that at least one domain object has validation
+        assert with_validation > 0, "No domain objects have validation mechanisms"

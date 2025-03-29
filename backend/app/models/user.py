@@ -3,7 +3,7 @@ User model for the Cognitive Workspace application.
 """
 
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class User(BaseModel):
@@ -14,7 +14,4 @@ class User(BaseModel):
     name: Optional[str] = None
     is_active: bool = True
 
-    class Config:
-        """Pydantic configuration."""
-
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

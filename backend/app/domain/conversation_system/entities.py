@@ -4,7 +4,7 @@ Conversation System domain entities.
 
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class MessageType:
@@ -32,11 +32,13 @@ class Message(BaseModel):
     content: str
     message_type: str = Field(
         ...,
-        regex=f"^({MessageType.USER}|{MessageType.ASSISTANT}|{MessageType.SYSTEM})$",
+        pattern=f"^({MessageType.USER}|{MessageType.ASSISTANT}|{MessageType.SYSTEM})$",
     )
     sender_id: str
     created_at: datetime
     metadata: Dict[str, Any] = Field(default_factory=dict)
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Context(BaseModel):
@@ -46,6 +48,8 @@ class Context(BaseModel):
     data: Dict[str, Any] = Field(default_factory=dict)
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class Conversation(BaseModel):
     """Conversation aggregate root entity."""
@@ -53,7 +57,10 @@ class Conversation(BaseModel):
     id: str
     project_id: str
     title: str = Field(..., min_length=1, max_length=200)
-    state: str = Field(default=ConversationState.ACTIVE)
+    state: str = Field(
+        default=ConversationState.ACTIVE,
+        pattern=f"^({'|'.join([v for v in vars(ConversationState).values() if isinstance(v, str)])})$",
+    )
     participants: List[str] = Field(default_factory=list)  # List of user IDs
     messages: List[Message] = Field(default_factory=list)
     context: List[Context] = Field(default_factory=list)
@@ -79,11 +86,8 @@ class Conversation(BaseModel):
 
     def update_state(self, new_state: str) -> None:
         """Update the conversation state."""
-        if new_state in vars(ConversationState).values():
+        if new_state in [v for v in vars(ConversationState).values() if isinstance(v, str)]:
             self.state = new_state
             self.updated_at = datetime.utcnow()
 
-    class Config:
-        """Pydantic configuration."""
-
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

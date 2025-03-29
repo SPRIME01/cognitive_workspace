@@ -5,7 +5,7 @@ Artifact Management domain entities.
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ArtifactType:
@@ -39,12 +39,16 @@ class Version(BaseModel):
     created_by: str
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class Tag(BaseModel):
     """Tag value object."""
 
     name: str = Field(..., min_length=1, max_length=50)
     color: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Artifact(BaseModel):
@@ -55,9 +59,13 @@ class Artifact(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = Field(None, max_length=1000)
     artifact_type: str = Field(
-        ..., regex=f"^({'|'.join(vars(ArtifactType).values())})$"
+        ...,
+        pattern=f"^({'|'.join([v for v in vars(ArtifactType).values() if isinstance(v, str)])})$",
     )
-    state: str = Field(default=ArtifactState.DRAFT)
+    state: str = Field(
+        default=ArtifactState.DRAFT,
+        pattern=f"^({'|'.join([v for v in vars(ArtifactState).values() if isinstance(v, str)])})$",
+    )
     owner_id: str
     current_version_id: Optional[str] = None
     versions: List[Version] = Field(default_factory=list)
@@ -86,11 +94,8 @@ class Artifact(BaseModel):
 
     def update_state(self, new_state: str) -> None:
         """Update the artifact state."""
-        if new_state in vars(ArtifactState).values():
+        if new_state in [v for v in vars(ArtifactState).values() if isinstance(v, str)]:
             self.state = new_state
             self.updated_at = datetime.utcnow()
 
-    class Config:
-        """Pydantic configuration."""
-
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

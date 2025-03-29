@@ -1,11 +1,13 @@
 """
 User schemas for API requests and responses.
 """
-from pydantic import BaseModel, EmailStr, Field
+
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 
 class UserBase(BaseModel):
     """Base User schema."""
+
     email: EmailStr
     name: str = Field(None)
     is_active: bool = True
@@ -13,11 +15,13 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     """Schema for User creation."""
+
     password: str
 
 
 class UserUpdate(BaseModel):
     """Schema for User updates."""
+
     email: EmailStr = None
     name: str = None
     password: str = None
@@ -25,8 +29,6 @@ class UserUpdate(BaseModel):
 
 class UserResponse(UserBase):
     """Schema for User responses."""
-    id: str
 
-    class Config:
-        """Pydantic Config."""
-        orm_mode = True
+    id: str
+    model_config = ConfigDict(from_attributes=True)

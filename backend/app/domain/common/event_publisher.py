@@ -4,9 +4,9 @@ Event publisher service.
 This module provides a service for publishing domain events to the event bus.
 """
 
-from typing import List, Dict, Any, Protocol
-from uuid import uuid4
 from datetime import datetime
+from typing import Any, List, Protocol
+from uuid import uuid4
 
 from app.domain.common.events import DomainEvent
 

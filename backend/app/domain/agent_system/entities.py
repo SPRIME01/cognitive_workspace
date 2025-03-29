@@ -4,7 +4,7 @@ Agent System domain entities.
 
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class AgentType:
@@ -42,12 +42,15 @@ class Capability(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=100)
     capability_type: str = Field(
-        ..., regex=f"^({'|'.join(vars(CapabilityType).values())})$"
+        ...,
+        pattern=f"^({'|'.join([v for v in vars(CapabilityType).values() if isinstance(v, str)])})$",
     )
     description: Optional[str] = Field(None, max_length=500)
     parameters: Dict[str, Any] = Field(default_factory=dict)
     constraints: Dict[str, Any] = Field(default_factory=dict)
     metadata: Dict[str, Any] = Field(default_factory=dict)
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class KnowledgeSource(BaseModel):
@@ -58,6 +61,8 @@ class KnowledgeSource(BaseModel):
     access_config: Dict[str, Any] = Field(default_factory=dict)
     priority: int = Field(default=0, ge=0, le=100)
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class Agent(BaseModel):
     """Agent aggregate root entity."""
@@ -65,15 +70,21 @@ class Agent(BaseModel):
     id: str
     name: str = Field(..., min_length=1, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
-    agent_type: str = Field(..., regex=f"^({'|'.join(vars(AgentType).values())})$")
+    agent_type: str = Field(
+        ..., pattern=f"^({'|'.join([v for v in vars(AgentType).values() if isinstance(v, str)])})$"
+    )
     capabilities: List[Capability] = Field(default_factory=list)
     knowledge_sources: List[KnowledgeSource] = Field(default_factory=list)
-    execution_mode: str = Field(default=ExecutionMode.SYNCHRONOUS)
+    execution_mode: str = Field(
+        default=ExecutionMode.SYNCHRONOUS,
+        pattern=f"^({'|'.join([v for v in vars(ExecutionMode).values() if isinstance(v, str)])})$",
+    )
     owner_id: str
     created_at: datetime
     updated_at: datetime
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
+    # Behavior methods
     def add_capability(self, capability: Capability) -> None:
         """Add a capability to the agent."""
         if capability not in self.capabilities:
@@ -96,11 +107,8 @@ class Agent(BaseModel):
 
     def set_execution_mode(self, mode: str) -> None:
         """Set the agent's execution mode."""
-        if mode in vars(ExecutionMode).values():
+        if mode in [v for v in vars(ExecutionMode).values() if isinstance(v, str)]:
             self.execution_mode = mode
             self.updated_at = datetime.utcnow()
 
-    class Config:
-        """Pydantic configuration."""
-
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

@@ -1,48 +1,37 @@
 """
-Configuration settings for the application.
-
-This module defines the application settings using Pydantic's BaseSettings.
+Application configuration settings.
 """
 
-from typing import List, Optional, Union
-import secrets
-from pydantic import BaseSettings, PostgresDsn, validator
+from typing import Optional
+from pydantic import Field, ConfigDict
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    """Application settings.
+    """Application settings."""
 
-    These settings can be configured using environment variables.
-    """
-
-    # API settings
-    API_PREFIX: str = "/api/v1"
+    # API Settings
+    API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "Cognitive Workspace"
-    DEBUG: bool = False
 
-    # CORS settings
-    CORS_ORIGINS: List[str] = ["http://localhost:3000", "https://localhost:3000"]
+    # Security
+    SECRET_KEY: str = Field(..., env="SECRET_KEY")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    # Database settings
-    DATABASE_URI: Optional[Union[str, PostgresDsn]] = (
-        "postgresql://postgres:postgres@localhost:5432/cognitive_workspace"
-    )
-    SQL_ECHO: bool = False
+    # Database
+    DATABASE_URL: str = Field(..., env="DATABASE_URL")
 
-    # JWT settings
-    JWT_SECRET_KEY: str = secrets.token_urlsafe(32)
-    JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    # CORS
+    BACKEND_CORS_ORIGINS: list = ["*"]
 
-    # Security settings
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    # OpenAI
+    OPENAI_API_KEY: Optional[str] = Field(None, env="OPENAI_API_KEY")
 
-    class Config:
-        """Pydantic config for Settings."""
+    # Storage
+    STORAGE_PROVIDER: str = "local"  # Options: local, s3, azure
+    STORAGE_BUCKET_NAME: Optional[str] = None
 
-        env_file = ".env"
-        case_sensitive = True
+    model_config = ConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=True)
 
 
 # Create global settings object

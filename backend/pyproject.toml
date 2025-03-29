@@ -37,7 +37,7 @@ disallow_incomplete_defs = true
 plugins = ["pydantic.mypy"]
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 target-version = "py39"
 select = ["E", "F", "I", "N", "B", "C4", "SIM", "ERA", "PL"]
 ignore = []
@@ -52,4 +52,5 @@ indent-style = "space"
 line-ending = "auto"
 
 [tool.uv]
-pip = true
+# UV tool configuration
+pip = { upgrade = true, no-binary = [] }

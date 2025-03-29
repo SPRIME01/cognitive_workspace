@@ -4,7 +4,7 @@ Knowledge Management domain entities.
 
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ItemType:
@@ -38,13 +38,16 @@ class Relationship(BaseModel):
     source_id: str
     target_id: str
     relationship_type: str = Field(
-        ..., regex=f"^({'|'.join(vars(RelationshipType).values())})$"
+        ...,
+        pattern=f"^({'|'.join([v for v in vars(RelationshipType).values() if isinstance(v, str)])})$",
     )
     weight: float = Field(default=1.0, ge=0.0, le=1.0)
     bidirectional: bool = Field(default=False)
     metadata: Dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
     updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Tag(BaseModel):
@@ -53,6 +56,8 @@ class Tag(BaseModel):
     name: str = Field(..., min_length=1, max_length=50)
     category: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Source(BaseModel):
@@ -64,6 +69,8 @@ class Source(BaseModel):
     url: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class KnowledgeItem(BaseModel):
     """Knowledge item aggregate root entity."""
@@ -71,7 +78,9 @@ class KnowledgeItem(BaseModel):
     id: str
     title: str = Field(..., min_length=1, max_length=200)
     content: str
-    item_type: str = Field(..., regex=f"^({'|'.join(vars(ItemType).values())})$")
+    item_type: str = Field(
+        ..., pattern=f"^({'|'.join([v for v in vars(ItemType).values() if isinstance(v, str)])})$"
+    )
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
     tags: List[Tag] = Field(default_factory=list)
     source: Optional[Source] = None
@@ -117,7 +126,4 @@ class KnowledgeItem(BaseModel):
             self.confidence = confidence
             self.updated_at = datetime.utcnow()
 
-    class Config:
-        """Pydantic configuration."""
-
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
