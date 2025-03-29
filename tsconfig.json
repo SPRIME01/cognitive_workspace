@@ -44,6 +44,12 @@
         "incremental": true
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "commitlint.config.js",
+        "frontend/next.config.js",
+        "packages/eslint-config/**/*.js",
+        "packages/test-utils/jest.config.js",
+        "packages/test-utils/src/__mocks__/*.js",
+        "scripts/**/*.js"
     ]
 }
